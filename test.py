@@ -2,6 +2,8 @@ import os
 import hydra
 import torch
 import utils.setup as setup
+from pathlib import Path
+import omegaconf
 
 def _main(args):
 
@@ -60,11 +62,20 @@ def _main(args):
 
 @hydra.main(config_path="conf", config_name="conf")
 def main(args):
-    #set device to gpu 2    
-    torch.cuda.set_device(2)
-    _main(args)
+
+    # Setting up CUDA device
+    print(f"Parsing torch configuration...")
+    try:
+        cuda_device = args.device.cuda_device
+        print(f"CUDA device set from config: {cuda_device}")
+    except omegaconf.errors.ConfigAttributeError:
+        cuda_device = 0
+        print(f"CUDA device set as system 0: {cuda_device}")
+    torch.cuda.set_device(cuda_device)
+    print(f"Using CUDA device: {cuda_device}")
 
 if __name__ == "__main__":
+    print(f"Starting from {Path.cwd()}")
     main()
 
 #----------------------------------------------------------------------------

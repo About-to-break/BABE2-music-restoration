@@ -53,5 +53,18 @@ Fine-tune from pre-trained model:
 python train.py  --config-name=conf_custom.yaml  model_dir="experiments/finetuned_model_dir" exp.batch=$batch_size dset.path="/path/to/dataset" exp.finetuning=True exp.base_checkpoint="/link/to/pretrained/checkpoint.pt" 
 ```
 
+## About_To_Breaks's mods
+
+**✍🏼 Added ability to manually choose CUDA device** 
+
+In your config hydra file:
+```yaml
+device:
+  cuda_device: 0
+```
+**🖥 Added ability to run on Windows** 
+
+Automate skipping `torch.compile()` due to platform limits,
+processing speed is likely to be up to 30% slower.
 
 

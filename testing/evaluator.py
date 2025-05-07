@@ -9,13 +9,19 @@ import copy
 import utils.blind_bwe_utils as blind_bwe_utils
 import wandb
 import soundfile as sf
+import platform
 
 class Evaluator():
     def __init__(
         self, args=None, network=None, diff_params=None,  device=None, it=None
     ):
         self.args=args
-        self.network=torch.compile(network)
+
+        if platform.system() != "Windows":
+            print("Warning! Running without torch compilation likely to show low performance")
+            self.network = torch.compile(network)
+        else:
+            self.network = network
 
         self.diff_params=copy.copy(diff_params)
         self.device=device
@@ -23,7 +29,6 @@ class Evaluator():
         if self.device is None:
             self.device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        self.network=network
 
         torch.backends.cudnn.benchmark = True
 
